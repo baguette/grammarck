@@ -7,13 +7,16 @@ type task =
   | LL1
 
 let mode = ref Usage
+let debug = ref false
 let filename = ref ""
 
 let cli_LL1 () = mode := LL1
+let cli_dbg () = debug := true
 let arg s = filename := s
 
 let cli = [
-  ("--LL1", Arg.Unit(cli_LL1), "Check if grammar is LL(1)")
+  ("--LL1", Arg.Unit(cli_LL1), "Check if grammar is LL(1)");
+  ("-g",    Arg.Unit(cli_dbg), "Display debug information")
 ]
 
 
@@ -25,11 +28,19 @@ let _ =
 
   match !mode with
   | Usage -> Arg.usage cli usage
-  | LL1   ->
+  | _     ->
     try
       let lexbuf = Lexing.from_channel @@ open_in !filename in
       let productions = Parser.main Lexer.token lexbuf in
-        print_string @@ production_list_repr productions
+      let _ = if !debug then
+                print_string @@ production_list_repr productions
+              else
+                ()
+      in
+      match !mode with
+      | LL1 -> (* TODO *) ()
+      (* control should never reach this branch... *)
+      | _ -> failwith "an internal error occurred"
     with
     | Lexer.UnexpectedEof ->
       ( print_string "Unexpected end of file\n";
