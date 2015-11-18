@@ -14,8 +14,15 @@ let _ =
     ( print_string "Lexer finished successfully\n";
       exit 0
     )
-  |Lexer.UnexpectedEof ->
+  | Lexer.UnexpectedEof ->
     ( print_string "Unexpected end of file\n";
+      exit 1
+    )
+  | Lexer.Error(n, s) ->
+    ( print_string "Lexical error line ";
+      print_int n;
+      print_string ": ";
+      print_string s;
       exit 1
     )
 

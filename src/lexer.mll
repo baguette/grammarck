@@ -1,11 +1,12 @@
 {
   open Tokens
 
-  let linecount = ref 0
+  let linecount = ref 1
   let section = ref 1
 
   exception Eof
   exception UnexpectedEof
+  exception Error of int * string
 }
 
 let whitespace = ' ' | '\t'
@@ -40,6 +41,9 @@ rule token = parse
   | '|'      { Pipe }
   | ';'      { Semi }
   | eof      { raise Eof }
+  | _        { raise (Error(!linecount,
+                            "unexpected character: " ^ Lexing.lexeme lexbuf))
+             }
 
 and comment = parse
   | "*/" { token lexbuf }
