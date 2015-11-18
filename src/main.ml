@@ -6,8 +6,7 @@ let _ =
     let lexbuf = Lexing.from_channel stdin in
     while true do
       let result = Lexer.token lexbuf in
-        print_string (token_repr result);
-        print_string "\n"
+        Printf.printf "%s\n" (token_repr result);
     done
   with
   | Lexer.Eof ->
@@ -19,10 +18,7 @@ let _ =
       exit 1
     )
   | Lexer.Error(n, s) ->
-    ( print_string "Lexical error line ";
-      print_int n;
-      print_string ": ";
-      print_string s;
+    ( Printf.printf "Lexical error line %d: %s\n" n s;
       exit 1
     )
 
