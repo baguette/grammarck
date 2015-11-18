@@ -1,0 +1,9 @@
+grammarck:  check a context free grammar for particular properties
+
+The idea of grammarck is to take a yacc-style grammar and to check
+it for various properties.
+
+As an example, suppose you want to check if a particular grammar is
+LL(1).  grammarck ought to be able to do that (but not yet, this
+project is a work in progress).
+
