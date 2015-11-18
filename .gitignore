@@ -1,0 +1,10 @@
+
+*.swp
+
+_build
+
+*.native
+*.byte
+*.d.native
+*.p.byte
+
