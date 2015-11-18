@@ -1,10 +1,9 @@
 {
-  open Tokens
+  open Parser
 
   let linecount = ref 1
   let section = ref 1
 
-  exception Eof
   exception UnexpectedEof
   exception Error of int * string
 }
@@ -40,7 +39,7 @@ rule token = parse
   | ':'      { Colon }
   | '|'      { Pipe }
   | ';'      { Semi }
-  | eof      { raise Eof }
+  | eof      { EOF }
   | _        { raise (Error(!linecount,
                             "unexpected character: " ^ Lexing.lexeme lexbuf))
              }
@@ -86,6 +85,6 @@ and caction = parse
 
 (* Ignore section 3 since it has real code we don't deal with *)
 and section3 = parse
-  | eof { raise Eof }
+  | eof { EOF }
   | _ { section3 lexbuf }
 

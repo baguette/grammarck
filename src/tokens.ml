@@ -1,11 +1,4 @@
-
-type tokens =
-  | Ident of string
-  | Colon
-  | Pipe
-  | Semi
-  | Sep
-  | Ptoken
+open Parser
 
 let token_repr tok =
   match tok with
