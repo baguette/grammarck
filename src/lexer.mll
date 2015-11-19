@@ -48,10 +48,10 @@ and comment = parse
   | "*/" { token lexbuf }
   | newline
     { incr linecount;
-      header lexbuf
+      comment lexbuf
     }
   | eof { raise UnexpectedEof }
-  | _ { header lexbuf }
+  | _ { comment lexbuf }
 
 (* Ignore the header and the semantic actions since we
  * only care about the grammar

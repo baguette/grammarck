@@ -1,4 +1,5 @@
 open Data
+open Funcs
 
 let usage = "usage: " ^ Sys.argv.(0) ^ " [task] <grammar.y>"
 
@@ -34,14 +35,20 @@ let _ =
       let lexbuf = Lexing.from_channel @@ open_in !filename in
       let productions = Parser.main Lexer.token lexbuf in
       let _ = if !debug then
-                print_string @@ production_list_repr productions
+                (print_string @@ production_list_repr productions;
+                flush stdout)
               else
                 ()
       in
       match !mode with
-      | LL1 -> (* TODO *) ()
+      | LL1 -> (* TODO *)
+        let first, follow = compute_first_follow productions in
+        print_string "FIRST\n";
+        print_tbl first;
+        print_string "\nFOLLOW\n";
+        print_tbl follow
       (* control should never reach this branch... *)
-      | _ -> failwith "an internal error occurred"
+      | _ -> Arg.usage cli usage
     with
     | Lexer.UnexpectedEof ->
       ( print_string "Unexpected end of file\n";
