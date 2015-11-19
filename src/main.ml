@@ -1,6 +1,6 @@
 open Data
 
-let usage = "grammarck [task] <grammar.y>"
+let usage = "usage: " ^ Sys.argv.(0) ^ " [task] <grammar.y>"
 
 type task =
   | Usage
@@ -24,7 +24,8 @@ let cli = [
 (* Main program *)
 let _ =
   let _ = Arg.parse cli arg usage in
-    ();
+    if !filename = "" then
+      Arg.usage cli usage;
 
   match !mode with
   | Usage -> Arg.usage cli usage
