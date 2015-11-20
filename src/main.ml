@@ -42,13 +42,15 @@ let _ =
       in
       match !mode with
       | LL1 -> (* TODO *)
-        let first, follow, nullable = compute_first_follow productions in
-        print_string "\nFIRST\n";
-        print_tbl first;
-        print_string "\nFOLLOW\n";
-        print_tbl follow;
-        print_string "\n";
-        Ll1.print_parse_table productions
+        if !debug then (
+          let first, follow, nullable = compute_first_follow productions in
+          print_string "\nFIRST\n";
+          print_tbl first;
+          print_string "\nFOLLOW\n";
+          print_tbl follow;
+          print_string "\n";
+          Ll1.print_parse_table productions
+        );
       (* control should never reach this branch... *)
       | _ -> Arg.usage cli usage
     with

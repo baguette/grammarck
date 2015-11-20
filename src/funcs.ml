@@ -54,9 +54,7 @@ let union tbl1 k1 tbl2 k2 : bool =
   let u = T.find tbl1 k1 in
 
   if S.compare u prev != 0 then
-    changed := true
-  else
-    ();
+    changed := true;
 
   !changed
 
@@ -98,43 +96,33 @@ let compute_first_follow productions =
       | [] -> if not (T.mem nullable name) then (
                 T.add nullable name true;
                 changed := true
-              ) else
-                ()
+              );
 
       | elms -> if each (T.mem nullable) elms then
                   if not (T.mem nullable name) then (
                     T.add nullable name true;
                     changed := true
-                  ) else
-                    ()
-                else
-                  ();
+                  );
 
                 for i = 0 to (List.length elms) - 1 do
                   if i = 0
                   || each (T.mem nullable) (take (i-1) elms)
                   then
                     changed := union first name
-                                     first (List.nth elms i)
-                  else
-                    ();
+                                     first (List.nth elms i);
 
                   for j = i + 1 to (List.length elms) - 1 do
                     if i = (List.length elms) - 1
                     || each (T.mem nullable) (drop i elms)
                     then
                       changed := union follow (List.nth elms i)
-                                       follow name
-                    else
-                      ();
+                                       follow name;
 
                     if i + 1 = j
                     || each (T.mem nullable) (take (j-1) (drop (i+1) elms))
                     then
                       changed := union follow (List.nth elms i)
-                                       first  (List.nth elms j)
-                    else
-                      ()
+                                       first  (List.nth elms j);
                   done
                 done
     ) productions
