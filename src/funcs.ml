@@ -140,7 +140,7 @@ let compute_first_follow productions =
     ) productions
   done;
 
-  (first, follow)
+  (first, follow, nullable)
 
 
 
