@@ -47,6 +47,30 @@ let compute_parse_table productions =
 
   t
 
+
+let report_conflicts productions =
+  let conflicts = ref 0 in
+
+  T.iter (fun k1 t ->
+    T.iter (fun k2 v ->
+      if P.cardinal v > 1 then (
+        conflicts := !conflicts + 1;
+        Printf.printf "Conflict for %s, %s: \n"
+            (element_to_string k1) (element_to_string k2);
+        P.iter (fun x ->
+          Printf.printf "%s\n" @@ production_to_string x
+        ) v;
+        Printf.printf "\n";
+      );
+    ) t;
+  ) @@ compute_parse_table productions;
+  
+  if !conflicts > 0 then
+    Printf.printf "Found %d conflicts\n" !conflicts
+  else
+    Printf.printf "Grammar looks good to me!\n"
+
+
 let print_parse_table productions =
   T.iter (fun k1 t ->
     T.iter (fun k2 v ->

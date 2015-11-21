@@ -41,7 +41,7 @@ let _ =
                 ()
       in
       match !mode with
-      | LL1 -> (* TODO *)
+      | LL1 ->
         if !debug then (
           let first, follow, nullable = compute_first_follow productions in
           print_string "\nFIRST\n";
@@ -51,6 +51,7 @@ let _ =
           print_string "\n";
           Ll1.print_parse_table productions
         );
+        Ll1.report_conflicts productions
       (* control should never reach this branch... *)
       | _ -> Arg.usage cli usage
     with
