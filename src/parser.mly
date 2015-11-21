@@ -25,7 +25,7 @@ section1 : Ptoken stringlist section1 { () }
          ;
 
 stringlist : Ident stringlist    { tokens := $1 :: !tokens }
-           | Ident               { tokens := $1 :: !tokens }
+           |                     { () }
            ;
 
 section2 : rule Semi section2    { () }
