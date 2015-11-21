@@ -4,6 +4,13 @@ The idea of grammarck is to take a yacc-style grammar and to check
 it for various properties.
 
 As an example, suppose you want to check if a particular grammar is
-LL(1).  grammarck ought to be able to do that (but not yet, this
-project is a work in progress).
+LL(1).  grammarck ought to be able to do that.
+
+To build you need OCaml 4.01 or newer.  There are two ways to build:
+
+1) Using make:  simply navigate to the grammarck directory and run make
+2) Using ocamlbuild:  navigate to the src directory and run
+   ocamlbuild main.native
+
+There are some sample grammars in the test directory.
 
