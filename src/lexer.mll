@@ -27,7 +27,10 @@ rule token = parse
   | "%{" { header  lexbuf }
   | '('  { paction lexbuf }
   | '{'  { caction lexbuf }
+  | '<'  { qualifier lexbuf }
 
+  | "%start" { Pstart }
+  | "%type"  { Ptype  }
   | "%token" { Ptoken }
   | ident    { Ident(Lexing.lexeme lexbuf) }
   | "%%"     { incr section;
@@ -37,9 +40,9 @@ rule token = parse
                  Sep
              }
   | ':'      { Colon }
-  | '|'      { Pipe }
-  | ';'      { Semi }
-  | eof      { EOF }
+  | '|'      { Pipe  }
+  | ';'      { Semi  }
+  | eof      { EOF   }
   | _        { raise (Error(!linecount,
                             "unexpected character: " ^ Lexing.lexeme lexbuf))
              }
@@ -82,6 +85,15 @@ and caction = parse
     }
   | eof { raise UnexpectedEof }
   | _ { caction lexbuf }
+
+and qualifier = parse
+  | '>' { token lexbuf }
+  | newline
+    { incr linecount;
+      qualifier lexbuf
+    }
+  | eof { raise UnexpectedEof }
+  | _ { qualifier lexbuf }
 
 (* Ignore section 3 since it has real code we don't deal with *)
 and section3 = parse

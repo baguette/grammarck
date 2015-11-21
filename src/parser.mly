@@ -7,7 +7,7 @@ let tokens : (string list) ref = ref []
 %token <string> Ident
 %token Colon Pipe Semi
 %token Sep
-%token Ptoken
+%token Ptoken Pstart Ptype
 %token EOF
 
 %start main
@@ -19,6 +19,8 @@ main : section1 Sep section2 EOF  { !productions }
      ;
 
 section1 : Ptoken stringlist section1 { () }
+         | Pstart Ident section1      { () }
+         | Ptype Ident section1       { () }
          |                            { () }
          ;
 
