@@ -12,5 +12,7 @@ To build you need OCaml 4.01 or newer.  There are two ways to build:
 2) Using ocamlbuild:  navigate to the src directory and run
    ocamlbuild main.native
 
+The resulting executable will be src/main.native
+
 There are some sample grammars in the test directory.
 
