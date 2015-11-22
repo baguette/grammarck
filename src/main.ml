@@ -35,7 +35,8 @@ let _ =
       let lexbuf = Lexing.from_channel @@ open_in !filename in
       let productions = Parser.main Lexer.token lexbuf in
       let _ = if !debug then
-                (print_string @@ production_list_repr productions;
+                (print_string "PRODUCTIONS\n";
+                 print_string @@ production_list_repr productions;
                  flush stdout)
               else
                 ()
@@ -48,8 +49,9 @@ let _ =
           print_tbl first;
           print_string "\nFOLLOW\n";
           print_tbl follow;
-          print_string "\n";
-          Ll1.print_parse_table productions
+          print_string "\nPREDICTIVE PARSE TABLE\n";
+          Ll1.print_parse_table productions;
+          print_string "\nRESULTS\n";
         );
         Ll1.report_conflicts productions
       (* control should never reach this branch... *)
