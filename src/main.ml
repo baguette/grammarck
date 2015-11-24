@@ -25,8 +25,10 @@ let cli = [
 (* Main program *)
 let _ =
   let _ = Arg.parse cli arg usage in
-    if !filename = "" then
+    if !filename = "" then (
       Arg.usage cli usage;
+      exit 1
+    );
 
   match !mode with
   | Usage -> Arg.usage cli usage
