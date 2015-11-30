@@ -36,8 +36,7 @@ let each pred xs =
  * false otherwise.
  *)
 let union tbl1 k1 tbl2 k2 : bool =
-  let changed = ref false in
-
+  (* If tbln does not have kn, initialize it to the empty set *)
   let _ = match T.find_all tbl1 k1 with
           | [] -> T.add tbl1 k1 S.empty
           | _ -> () in
@@ -54,10 +53,9 @@ let union tbl1 k1 tbl2 k2 : bool =
   let u = T.find tbl1 k1 in
 
   if S.compare u prev != 0 then
-    changed := true;
-
-  !changed
-
+    true
+  else
+    false
 
 (* True if elem is a terminal *)
 let is_terminal elem =
