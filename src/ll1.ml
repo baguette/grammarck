@@ -1,7 +1,6 @@
 open Data
 open Funcs
 
-module P = Set.Make(Production)
 
 let tbl_default t k d =
   match T.find_all t k with

@@ -1,32 +1,9 @@
 open Data
+open Util
 
 module T = Hashtbl
 module S = Set.Make(Element)
-
-
-(* Discard the first n elements of xs *)
-let rec drop n xs =
-  match xs with
-  | [] -> []
-  | x::xs as rest -> if n <= 0 then
-                       rest
-                     else
-                       drop (n - 1) xs
-
-(* Get the first n elements of xs *)
-let rec take n xs =
-  match xs with
-  | [] -> []
-  | x::xs -> if n <= 0 then
-               []
-             else
-               x :: take (n - 1) xs
-
-(* Like List.for_all, but return false when the list is empty *)
-let each pred xs =
-  match xs with
-  | [] -> false
-  | xs -> List.for_all pred xs
+module P = Set.Make(Production)
 
 
 (* Union the production sets found at tbl1[k1] and tbl2[k2] 
@@ -52,10 +29,18 @@ let union tbl1 k1 tbl2 k2 : bool =
 
   let u = T.find tbl1 k1 in
 
-  if S.compare u prev != 0 then
+  if S.compare u prev <> 0 then
     true
   else
     false
+
+
+let rec find_productions lhs productions =
+  List.filter (fun prod ->
+    let Prod(name, elems) = prod in
+    lhs = name
+  ) productions
+
 
 (* True if elem is a terminal *)
 let is_terminal elem =
@@ -73,7 +58,19 @@ let rec get_terminals productions =
 
 
 
-(* Algorithm 3.13 from p49 of Appel (1998) *)
+(* Algorithm 3.13 from p49 of Appel (1998)
+ *
+ * Compute FIRST, FOLLOW, and nullable sets for a given grammar
+ * represented by production list productions
+ *
+ * FIRST and FOLLOW are Hashtbls of the form
+ *    tbl[element] = Set of element (S.t)
+ *
+ * nullable is also a Hashtbl, but containing only elements which
+ * are nullable:
+ *     nullable[element] = true
+ * If an element is not nullable, it will not be mapped in the table.
+ *)
 let compute_first_follow productions =
   let len = List.length productions in
 
@@ -130,6 +127,7 @@ let compute_first_follow productions =
 
 
 
+(* Print a Set of elements (S.t) *)
 let print_set s =
   print_string "{ ";
   S.iter (fun x ->
@@ -138,6 +136,7 @@ let print_set s =
   ) s;
   print_string "}"
 
+(* Print a FIRST or FOLLOW table *)
 let print_tbl t =
   T.iter (fun k v ->
     match k with

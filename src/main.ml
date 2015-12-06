@@ -6,17 +6,21 @@ let usage = "usage: " ^ Sys.argv.(0) ^ " [task] <grammar.y>"
 type task =
   | Usage
   | LL1
+  | LR0
 
 let mode = ref Usage
 let debug = ref false
 let filename = ref ""
 
 let cli_LL1 () = mode := LL1
+let cli_LR0 () = mode := LR0
+
 let cli_dbg () = debug := true
 let arg s = filename := s
 
 let cli = [
   ("--LL1", Arg.Unit(cli_LL1), "Check if grammar is LL(1)");
+  ("--LR0", Arg.Unit(cli_LR0), "Check if grammar is LR(0)");
   ("-g",    Arg.Unit(cli_dbg), "Display debug information")
 ]
 
@@ -35,7 +39,7 @@ let _ =
   | _     ->
     try
       let lexbuf = Lexing.from_channel @@ open_in !filename in
-      let productions = Parser.main Lexer.token lexbuf in
+      let start, productions = Parser.main Lexer.token lexbuf in
       let _ = if !debug then
                 (print_string "PRODUCTIONS\n";
                  print_string @@ production_list_repr productions;
@@ -56,6 +60,23 @@ let _ =
           print_string "\nRESULTS\n";
         );
         Ll1.report_conflicts productions
+      | LR0 -> 
+          (match start with
+           | None -> print_string
+             "ERROR: Must specify a start production in LR grammars"
+           | Some(start) ->
+               if !debug then (
+                 print_string "\nFIND_PRODUCTIONS\n";
+                 List.iter (fun x ->
+                   Printf.printf "%s\n" @@ production_to_string x
+                 ) @@ find_productions (Nonterminal("e")) productions;
+                 print_string "\nEDGES\n";
+                 Lr0.print_edges start productions;
+                 print_string "\nLR(0) PARSE TABLE\n";
+                 Lr0.print_parse_table start productions
+               );
+               Lr0.report_conflicts start productions
+          )
       (* control should never reach this branch... *)
       | _ -> Arg.usage cli usage
     with

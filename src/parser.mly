@@ -2,6 +2,7 @@
 open Data
 let productions : (production list) ref = ref []
 let tokens : (string list) ref = ref []
+let start = ref None
 %}
 
 %token <string> Ident
@@ -11,15 +12,15 @@ let tokens : (string list) ref = ref []
 %token EOF
 
 %start main
-%type <Data.production list> main
+%type <Data.element option * Data.production list> main
 
 %%
 
-main : section1 Sep section2 EOF  { !productions }
+main : section1 Sep section2 EOF  { (!start, !productions) }
      ;
 
 section1 : Ptoken stringlist section1 { () }
-         | Pstart Ident section1      { () }
+         | Pstart Ident section1      { start := Some(Nonterminal($2)) }
          | Ptype Ident section1       { () }
          |                            { () }
          ;
