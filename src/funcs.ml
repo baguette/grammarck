@@ -56,6 +56,40 @@ let rec get_terminals productions =
     List.fold_right S.add (List.filter is_terminal elems)
                           (get_terminals prods)
 
+(* Get a list of nonterminals that have no productions *)
+let check_productions productions =
+  let rec defined_productions productions =
+    match productions with
+    | [] -> S.empty
+    | Prod(name, _)::prods -> S.add name (defined_productions prods)
+  in
+  let defined = defined_productions productions in
+
+  List.concat @@ List.concat @@
+    List.map (fun production ->
+                match production with
+                | Prod(_, elems) ->
+                  (List.map (fun elm ->
+                              match elm with
+                              | Terminal(_) -> []
+                              | Nonterminal(name) ->
+                                if S.mem elm defined then
+                                  []
+                                else
+                                  [name])
+                            elems)
+             ) productions
+
+let check_and_warn productions =
+  let unused = check_productions productions in
+  match unused with
+  | [] -> false
+  | xs -> Printf.printf
+           "ERROR: The following nonterminals are used but not defined:\n";
+          List.iter (fun name ->
+                      Printf.printf "\t%s\n" name)
+                    xs;
+          true
 
 
 (* Algorithm 3.13 from p49 of Appel (1998)

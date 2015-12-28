@@ -59,7 +59,10 @@ let _ =
           Ll1.print_parse_table productions;
           print_string "\nRESULTS\n";
         );
-        Ll1.report_conflicts productions
+        if check_and_warn productions then
+          Printf.printf "Problems were found with the grammar."
+        else
+          Ll1.report_conflicts productions
       | LR0 -> 
           (match start with
            | None -> print_string
@@ -75,7 +78,10 @@ let _ =
                  print_string "\nLR(0) PARSE TABLE\n";
                  Lr0.print_parse_table start productions
                );
-               Lr0.report_conflicts start productions
+               if check_and_warn productions then
+                Printf.printf "Problems were found with the grammar."
+               else
+                Lr0.report_conflicts start productions
           )
       (* control should never reach this branch... *)
       | _ -> Arg.usage cli usage
