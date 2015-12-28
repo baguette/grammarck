@@ -89,7 +89,7 @@ let _ =
         exit 1
       )
     | Parsing.Parse_error ->
-      ( Printf.printf "Syntax error\n";
+      ( Printf.printf "Syntax error line %d\n" !Lexer.linecount;
         exit 1
       )
 
